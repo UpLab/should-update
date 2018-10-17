@@ -1,0 +1,71 @@
+{
+  "name": "@uplab/should-update",
+  "version": "1.0.0",
+  "description": "shouldComponentUpdate without headache 🤕",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src/ test/",
+    "build": "babel -o dist/index.js src/index.js",
+    "help": "babel -h"
+  },
+  "keywords": [
+    "shouldComponentUpdate",
+    "react",
+    "should",
+    "component",
+    "react-optimization",
+    "update"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/UpLab/should-update.git"
+  },
+  "bugs": {
+    "url": "https://github.com/UpLab/should-update/issues"
+  },
+  "author": "Ihor Barmak <ihor@uplab.io> (brmk)",
+  "license": "MIT",
+  "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-cli": "^6.9.0",
+    "babel-eslint": "^7.2.3",
+    "babel-jest": "^20.0.3",
+    "babel-preset-airbnb": "^2.0.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-react": "^7.1.0",
+    "jest": "^20.0.4",
+    "jsdom": "^11.0.0",
+    "lodash.clonedeep": "^4.5.0"
+  },
+  "dependencies": {
+    "lodash.get": "^4.4.2",
+    "lodash.isequal": "^4.5.0"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "**/*.{js,jsx}",
+      "!**/test/**",
+      "!**/node_modules/**"
+    ],
+    "testMatch": [
+      "<rootDir>/**/?(*.)(spec|test).js?(x)"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>[/\\\\](dist|docs|node_modules|scripts)[/\\\\]"
+    ],
+    "testEnvironment": "jsdom",
+    "testURL": "http://localhost",
+    "transform": {
+      "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
+    ],
+    "coverageDirectory": "<rootDir>/reports/coverage"
+  }
+}
