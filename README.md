@@ -13,8 +13,8 @@ In most cases ones `shouldComponentUpdate` function implementation looks similar
 class DeathStar extends Component {
   shouldComponentUpdate(nextProps) {
     return (
-      this.props.jedi.id !== nextProps.id ||
-      this.props.jedi.name !== nextProps.name ||
+      this.props.jedi.id !== nextProps.jedi.id ||
+      this.props.jedi.name !== nextProps.jedi.name ||
       this.props.jedi.profile.firstName !== nextProps.jedi.profile.lastName
       // ... forevermore 
     );
