@@ -53,7 +53,7 @@ import isEqual from 'lodash.isequal';
  * @param  {array} params.dependencies - array of pathes of the properties to depend on
  * @param  {array} params.dependenciesState - array of pathes of the properties to depend on
  * @param  {object} params.props - component props
- * @param  {object} params.props - component state
+ * @param  {object} params.state - component state
  * @param  {object} params.nextProps - component changed props. Can be previous or next props
  * @param  {object} params.nextState - component changed state. Can be previous or next state
  * @param  {boolean} [params.shallow] - if `true` then the function will do shallow comparison.
