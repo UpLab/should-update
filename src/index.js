@@ -24,19 +24,52 @@ import isEqual from 'lodash.isequal';
  *    }
  *  },
  * });
+ *
+ *  shouldUpdate({
+ *  dependenciesState: ['user.profile.firstName', 'user.profile.lastName'],
+ *  state: {
+ *    user: {
+ *      id: 'some-id',
+ *      profile: {
+ *        firstName: 'Darth',
+ *        lastName: 'Vader',
+ *      }
+ *    }
+ *  },
+ *  nextState {
+ *    user: {
+ *      id: 'some-id',
+ *      profile: {
+ *        firstName: 'Anakin',
+ *        lastName: 'Skywalker',
+ *      }
+ *    }
+ *  },
+ * });
  * @returns true because firstName and lastName have changed
  *
  *
  * @param  {object} params
  * @param  {array} params.dependencies - array of pathes of the properties to depend on
+ * @param  {array} params.dependenciesState - array of pathes of the properties to depend on
  * @param  {object} params.props - component props
+ * @param  {object} params.props - component state
  * @param  {object} params.nextProps - component changed props. Can be previous or next props
+ * @param  {object} params.nextState - component changed state. Can be previous or next state
  * @param  {boolean} [params.shallow] - if `true` then the function will do shallow comparison.
  *
  * @return {boolean} - Returns `true` if the component should update, else `false`.
  */
 
-export function shouldUpdate({ dependencies = [], props, nextProps, shallow }) {
+export function shouldUpdate({
+  dependencies = [],
+  props,
+  nextProps,
+  shallow,
+  state,
+  nextState,
+  dependenciesState = [],
+}) {
   for (let i = 0; i < dependencies.length; i += 1) {
     const path = dependencies[i];
     const valueA = get(props, path);
@@ -47,6 +80,18 @@ export function shouldUpdate({ dependencies = [], props, nextProps, shallow }) {
       return true;
     }
   }
+
+  for (let i = 0; i < dependenciesState.length; i += 1) {
+    const path = dependenciesState[i];
+    const valueA = get(state, path);
+    const valueB = get(nextState, path);
+
+    const changed = shallow ? valueA !== valueB : !isEqual(valueA, valueB);
+    if (changed) {
+      return true;
+    }
+  }
+
   return false;
 }
 
@@ -60,15 +105,29 @@ export function shouldUpdate({ dependencies = [], props, nextProps, shallow }) {
  *  })
  * }
  *
+ * class MyComponent extends Component {
+ *   shouldComponentUpdate: createShouldUpdate({
+ *     dependenciesState: ['user'],
+ *     shallow: false,
+ *  })
+ * }
+ *
  * @param  {object} params
  * @param  {array} params.dependencies - array of pathes of the properties to depend on
+ * @param  {array} params.dependenciesState - array of pathes of the properties to depend on
  * @param  {boolean} [params.shallow] - if `true` then the function will do shallow comparison.
  *
  * @return {function} - shouldComponentUpdate implementation
  */
 
-export function createShouldUpdate({ dependencies, shallow, ...options }) {
-  return function shouldComponentUpdate(nextProps) {
-    return shouldUpdate({ dependencies, ...options, props: this.props, nextProps });
+export function createShouldUpdate({ dependencies, dependenciesState, shallow, ...options }) {
+  return function shouldComponentUpdate(nextProps, nextState) {
+    let result;
+    if (nextProps) {
+      result = shouldUpdate({ dependencies, ...options, props: this.props, nextProps });
+    } else {
+      result = shouldUpdate({ dependenciesState, ...options, state: this.state, nextState });
+    }
+    return result;
   };
 }

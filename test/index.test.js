@@ -25,7 +25,7 @@ const secondUser = {
 
 describe('should-update', () => {
   describe('shouldUpdate()', () => {
-    it('returns false if no changes were made', () => {
+    it('returns false if no changes were made (props)', () => {
       expect(shouldUpdate({
         dependencies: ['user.profile'],
         props: { user: { ...firstUser } },
@@ -33,11 +33,29 @@ describe('should-update', () => {
       })).toBe(false);
     });
 
-    it('returns false if no changes were made with shallow', () => {
+    it('returns false if no changes were made with shallow (props)', () => {
       expect(shouldUpdate({
         dependencies: ['user.profile'],
         props: { user: firstUser },
         nextProps: { user: firstUser },
+        shallow: true,
+      })).toBe(false);
+    });
+
+    it('returns false if no changes were made (state)', () => {
+      expect(shouldUpdate({
+        dependenciesState: ['user.profile'],
+        state: { user: firstUser },
+        nextState: { user: firstUser },
+        shallow: true,
+      })).toBe(false);
+    });
+
+    it('returns false if no changes were made with shallow (state)', () => {
+      expect(shouldUpdate({
+        dependenciesState: ['user.profile'],
+        state: { user: firstUser },
+        nextState: { user: firstUser },
         shallow: true,
       })).toBe(false);
     });
@@ -59,7 +77,7 @@ describe('should-update', () => {
       })).toBe(false);
     });
 
-    it('returns true if changes were made', () => {
+    it('returns true if changes were made (props)', () => {
       expect(shouldUpdate({
         dependencies: ['user.profile'],
         props: { user: { ...firstUser } },
@@ -67,11 +85,28 @@ describe('should-update', () => {
       })).toBe(true);
     });
 
-    it('returns true if changes were made with shallow', () => {
+    it('returns true if changes were made with shallow (props)', () => {
       expect(shouldUpdate({
         dependencies: ['user.profile'],
         props: { user: { ...firstUser } },
         nextProps: { user: { ...secondUser } },
+        shallow: true,
+      })).toBe(true);
+    });
+
+    it('returns true if changes were made (state)', () => {
+      expect(shouldUpdate({
+        dependenciesState: ['user.profile'],
+        state: { user: { ...firstUser } },
+        nextState: { user: { ...secondUser } },
+      })).toBe(true);
+    });
+
+    it('returns true if changes were made with shallow (state)', () => {
+      expect(shouldUpdate({
+        dependenciesState: ['user.profile'],
+        state: { user: { ...firstUser } },
+        nextState: { user: { ...secondUser } },
         shallow: true,
       })).toBe(true);
     });
