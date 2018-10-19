@@ -55,6 +55,33 @@ class DeathStar extends Component {
 }
 ```
 
+for state
+
+```javascript
+import { createShouldUpdate } from 'should-update';
+
+class DeathStar extends Component {
+  shouldComponentUpdate: createShouldUpdate({ dependenciesState: ['jedi.id', 'jedi.name', 'jedi.profile.firstName'] })
+}
+```
+
+or
+
+```javascript
+import { shouldUpdate } from 'should-update';
+
+class DeathStar extends Component {
+  shouldComponentUpdate(nextState) {
+    const stateChanged = shouldUpdate({
+      dependenciesState: ['jedi.id', 'jedi.name', 'jedi.profile.firstName'],
+      state: this.state,
+      nextState,
+    });
+    // some custom stuff with stateChanged
+  }
+}
+```
+
 By default, if the resolved path is a type of object, then the deep comparison happens to check all the nested props.
 To avoid this behavior when you have complex and huge objects you can pass `shallow: true` prop:
 
@@ -73,6 +100,23 @@ shouldUpdate({
 });
 ```
 
+for state 
+
+```javascript
+shouldComponentUpdate: createShouldUpdate({ dependenciesState: ['jedi.profile'], shallow: true })
+```
+
+or
+
+```javascript
+shouldUpdate({
+  dependenciesState: ['jedi.profile'],
+  state: this.state,
+  nextState,
+  shallow: true, //defaults to false
+});
+```
+
 ## API
 ### `shouldUpdate(params)`
 
@@ -80,6 +124,10 @@ shouldUpdate({
 - @param {object} params.props - component props
 - @param {object} params.nextProps - component changed props. Can be previous or next props
 - @param {boolean} [params.shallow] - if `true` then the function will do shallow comparison.
+- @param {array} params.dependenciesState - array of pathes of the properties to depend on
+- @param {object} params.state - component state
+- @param {object} params.nextState - component changed state. Can be previous or next state
+
 
 Returns `true` if the component should update, else `false`.
 
