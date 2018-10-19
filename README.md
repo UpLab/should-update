@@ -34,7 +34,19 @@ presented as a path string (i.e. `some.very.deeply.nested.data.and.even.array[0]
 import { createShouldUpdate } from 'should-update';
 
 class DeathStar extends Component {
-  shouldComponentUpdate: createShouldUpdate({ dependencies: ['jedi.id', 'jedi.name', 'jedi.profile.firstName'] })
+  state = {
+    selectedJedi: {
+      id: 'some-id',
+      profile: {
+        firstName: 'Anakin',
+        lastName: 'Skywalker',
+      }
+    }
+  }
+  shouldComponentUpdate: createShouldUpdate({
+    dependencies: ['jedi.id', 'jedi.name', 'jedi.profile.firstName'],
+    stateDependencies: ['selectedJedi.profile.firstName', 'selectedJedi.profile.lastName', 'selectedJedi.profile.id']
+  })
 }
 ```
 
@@ -44,40 +56,23 @@ or
 import { shouldUpdate } from 'should-update';
 
 class DeathStar extends Component {
-  shouldComponentUpdate(nextProps) {
-    const propsChanged = shouldUpdate({
+  shouldComponentUpdate(nextProps, nextState) {
+    selectedJedi: {
+      id: 'some-id',
+      profile: {
+        firstName: 'Anakin',
+        lastName: 'Skywalker',
+      }
+    }
+    const dataChanged = shouldUpdate({
       dependencies: ['jedi.id', 'jedi.name', 'jedi.profile.firstName'],
+      stateDependencies: ['selectedJedi.profile.firstName', 'selectedJedi.profile.lastName', 'selectedJedi.profile.id'],
+      state: this.state,
       props: this.props,
       nextProps,
-    });
-    // some custom stuff with propsChanged
-  }
-}
-```
-
-for state
-
-```javascript
-import { createShouldUpdate } from 'should-update';
-
-class DeathStar extends Component {
-  shouldComponentUpdate: createShouldUpdate({ dependenciesState: ['jedi.id', 'jedi.name', 'jedi.profile.firstName'] })
-}
-```
-
-or
-
-```javascript
-import { shouldUpdate } from 'should-update';
-
-class DeathStar extends Component {
-  shouldComponentUpdate(nextState) {
-    const stateChanged = shouldUpdate({
-      dependenciesState: ['jedi.id', 'jedi.name', 'jedi.profile.firstName'],
-      state: this.state,
       nextState,
     });
-    // some custom stuff with stateChanged
+    // some custom stuff with dataChanged
   }
 }
 ```
@@ -86,7 +81,7 @@ By default, if the resolved path is a type of object, then the deep comparison h
 To avoid this behavior when you have complex and huge objects you can pass `shallow: true` prop:
 
 ```javascript
-shouldComponentUpdate: createShouldUpdate({ dependencies: ['jedi.profile'], shallow: true })
+shouldComponentUpdate: createShouldUpdate({ dependencies: ['jedi.profile'], shallow: true, stateDependencies: ['selectedJedi.profile'] })
 ```
 
 or
@@ -97,23 +92,9 @@ shouldUpdate({
   props: this.props,
   nextProps,
   shallow: true, //defaults to false
-});
-```
-
-for state 
-
-```javascript
-shouldComponentUpdate: createShouldUpdate({ dependenciesState: ['jedi.profile'], shallow: true })
-```
-
-or
-
-```javascript
-shouldUpdate({
-  dependenciesState: ['jedi.profile'],
+  stateDependencies: ['selectedJedi.profile'],
   state: this.state,
   nextState,
-  shallow: true, //defaults to false
 });
 ```
 
@@ -124,7 +105,7 @@ shouldUpdate({
 - @param {object} params.props - component props
 - @param {object} params.nextProps - component changed props. Can be previous or next props
 - @param {boolean} [params.shallow] - if `true` then the function will do shallow comparison.
-- @param {array} params.dependenciesState - array of pathes of the properties to depend on
+- @param {array} params.stateDependencies - array of pathes of the properties to depend on
 - @param {object} params.state - component state
 - @param {object} params.nextState - component changed state. Can be previous or next state
 

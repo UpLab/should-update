@@ -45,7 +45,7 @@ describe('should-update', () => {
 
     it('returns false if no changes were made (state)', () => {
       expect(shouldUpdate({
-        dependenciesState: ['user.profile'],
+        stateDependencies: ['user.profile'],
         state: { user: firstUser },
         nextState: { user: firstUser },
         shallow: true,
@@ -54,9 +54,20 @@ describe('should-update', () => {
 
     it('returns false if no changes were made with shallow (state)', () => {
       expect(shouldUpdate({
-        dependenciesState: ['user.profile'],
+        stateDependencies: ['user.profile'],
         state: { user: firstUser },
         nextState: { user: firstUser },
+        shallow: true,
+      })).toBe(false);
+    });
+    it('returns false if no changes were made with shallow (state and props)', () => {
+      expect(shouldUpdate({
+        stateDependencies: ['user.profile'],
+        state: { user: firstUser },
+        nextState: { user: firstUser },
+        dependencies: ['user.profile'],
+        props: { user: firstUser },
+        nextProps: { user: firstUser },
         shallow: true,
       })).toBe(false);
     });
@@ -97,7 +108,18 @@ describe('should-update', () => {
 
     it('returns true if changes were made (state)', () => {
       expect(shouldUpdate({
-        dependenciesState: ['user.profile'],
+        stateDependencies: ['user.profile'],
+        state: { user: { ...firstUser } },
+        nextState: { user: { ...secondUser } },
+      })).toBe(true);
+    });
+
+    it('returns true if changes were made (state and props)', () => {
+      expect(shouldUpdate({
+        dependencies: ['user.profile'],
+        props: { user: { ...firstUser } },
+        nextProps: { user: { ...secondUser } },
+        stateDependencies: ['user.profile'],
         state: { user: { ...firstUser } },
         nextState: { user: { ...secondUser } },
       })).toBe(true);
@@ -105,7 +127,7 @@ describe('should-update', () => {
 
     it('returns true if changes were made with shallow (state)', () => {
       expect(shouldUpdate({
-        dependenciesState: ['user.profile'],
+        stateDependencies: ['user.profile'],
         state: { user: { ...firstUser } },
         nextState: { user: { ...secondUser } },
         shallow: true,
