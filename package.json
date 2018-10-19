@@ -1,6 +1,6 @@
 {
   "name": "@uplab/should-update",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "shouldComponentUpdate without headache 🤕",
   "main": "dist/index.js",
   "scripts": {

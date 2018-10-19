@@ -16,12 +16,14 @@ var _lodash4 = _interopRequireDefault(_lodash3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; } /* eslint max-len: 0 */
+
 
 /**
  * @example
  * shouldUpdate({
  *  dependencies: ['user.profile.firstName', 'user.profile.lastName'],
+ *  stateDependencies: ['formState'],
  *  props: {
  *    user: {
  *      id: 'some-id',
@@ -29,6 +31,12 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
  *        firstName: 'Darth',
  *        lastName: 'Vader',
  *      }
+ *    }
+ *  },
+ *  state: {
+ *    formState: {
+ *      firstName: 'Anakin',
+ *      lastName: 'Skywalker',
  *    }
  *  },
  *  nextProps {
@@ -40,25 +48,39 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
  *      }
  *    }
  *  },
+ *  nextState {
+ *    formState: {
+ *      firstName: 'Anakin',
+ *      lastName: 'Skywalker',
+ *    }
+ *  },
  * });
- * @returns true because firstName and lastName have changed
+ *
+ * @returns true because data have changed
  *
  *
  * @param  {object} params
  * @param  {array} params.dependencies - array of pathes of the properties to depend on
+ * @param  {array} params.stateDependencies - array of pathes of the properties to depend on
  * @param  {object} params.props - component props
+ * @param  {object} params.state - component state
  * @param  {object} params.nextProps - component changed props. Can be previous or next props
+ * @param  {object} params.nextState - component changed state. Can be previous or next state
  * @param  {boolean} [params.shallow] - if `true` then the function will do shallow comparison.
  *
  * @return {boolean} - Returns `true` if the component should update, else `false`.
  */
 
-function shouldUpdate(_ref) {
-  var _ref$dependencies = _ref.dependencies,
-      dependencies = _ref$dependencies === undefined ? [] : _ref$dependencies,
-      props = _ref.props,
-      nextProps = _ref.nextProps,
-      shallow = _ref.shallow;
+function shouldUpdate(params) {
+  var _params$dependencies = params.dependencies,
+      dependencies = _params$dependencies === undefined ? [] : _params$dependencies,
+      props = params.props,
+      nextProps = params.nextProps,
+      shallow = params.shallow,
+      state = params.state,
+      nextState = params.nextState,
+      _params$stateDependen = params.stateDependencies,
+      stateDependencies = _params$stateDependen === undefined ? [] : _params$stateDependen;
 
   for (var i = 0; i < dependencies.length; i += 1) {
     var path = dependencies[i];
@@ -70,6 +92,18 @@ function shouldUpdate(_ref) {
       return true;
     }
   }
+
+  for (var _i = 0; _i < stateDependencies.length; _i += 1) {
+    var _path = stateDependencies[_i];
+    var _valueA = (0, _lodash2['default'])(state, _path);
+    var _valueB = (0, _lodash2['default'])(nextState, _path);
+
+    var _changed = shallow ? _valueA !== _valueB : !(0, _lodash4['default'])(_valueA, _valueB);
+    if (_changed) {
+      return true;
+    }
+  }
+
   return false;
 }
 
@@ -77,26 +111,38 @@ function shouldUpdate(_ref) {
  * @example
  * class MyComponent extends Component {
  *   shouldComponentUpdate: createShouldUpdate({
+ *     stateDependencies: ['formState'],
  *     dependencies: ['user'],
  *     shallow: false,
  *  })
  * }
  *
+ *
  * @param  {object} params
  * @param  {array} params.dependencies - array of pathes of the properties to depend on
+ * @param  {array} params.stateDependencies - array of pathes of the properties to depend on
  * @param  {boolean} [params.shallow] - if `true` then the function will do shallow comparison.
  *
  * @return {function} - shouldComponentUpdate implementation
  */
 
-function createShouldUpdate(_ref2) {
-  var dependencies = _ref2.dependencies,
-      shallow = _ref2.shallow,
-      options = _objectWithoutProperties(_ref2, ['dependencies', 'shallow']);
+function createShouldUpdate(_ref) {
+  var dependencies = _ref.dependencies,
+      stateDependencies = _ref.stateDependencies,
+      shallow = _ref.shallow,
+      options = _objectWithoutProperties(_ref, ['dependencies', 'stateDependencies', 'shallow']);
 
   return function () {
-    function shouldComponentUpdate(nextProps) {
-      return shouldUpdate(Object.assign({ dependencies: dependencies }, options, { props: this.props, nextProps: nextProps }));
+    function shouldComponentUpdate(nextProps, nextState) {
+      return shouldUpdate(Object.assign({
+        dependencies: dependencies
+      }, options, {
+        props: this.props,
+        nextProps: nextProps,
+        state: this.state,
+        stateDependencies: stateDependencies,
+        nextState: nextState
+      }));
     }
 
     return shouldComponentUpdate;
