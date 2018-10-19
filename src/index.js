@@ -1,3 +1,4 @@
+/* eslint max-len: 0 */
 import get from 'lodash.get';
 import isEqual from 'lodash.isequal';
 
@@ -122,12 +123,6 @@ export function shouldUpdate({
 
 export function createShouldUpdate({ dependencies, dependenciesState, shallow, ...options }) {
   return function shouldComponentUpdate(nextProps, nextState) {
-    let result;
-    if (nextProps) {
-      result = shouldUpdate({ dependencies, ...options, props: this.props, nextProps });
-    } else {
-      result = shouldUpdate({ dependenciesState, ...options, state: this.state, nextState });
-    }
-    return result;
+    return shouldUpdate({ dependencies, ...options, props: this.props, nextProps, state: this.state, dependenciesState, nextState });
   };
 }

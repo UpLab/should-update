@@ -1,3 +1,4 @@
+
 import cloneDeep from 'lodash.clonedeep';
 import { shouldUpdate, createShouldUpdate } from '../src';
 
@@ -113,7 +114,7 @@ describe('should-update', () => {
   });
 
   describe('createShouldUpdate()', () => {
-    it('creates a simple shouldComponentUpdate function', () => {
+    it('creates a simple shouldComponentUpdate function (props)', () => {
       const mock = new TestComponent({
         user: firstUser,
       });
