@@ -26,7 +26,8 @@ class DeathStar extends Component {
 
 This package is made to simplify the API for props and state comparison to a single function call.
 `@uplab/should-update` can deal with nested properties and accepts an array on dependencies that are 
-presented as a path string (i.e. `some.very.deeply.nested.data.and.even.array[0].items`).
+presented as a path string (i.e. `some.very.deeply.nested.data.and.even.array[0].items`). It can track 
+not only the props change, but a state changes.
 
 **Example usage**:
 
@@ -35,17 +36,14 @@ import { createShouldUpdate } from 'should-update';
 
 class DeathStar extends Component {
   state = {
-    selectedJedi: {
-      id: 'some-id',
-      profile: {
-        firstName: 'Anakin',
-        lastName: 'Skywalker',
-      }
+    formState: {
+      firstName: 'Anakin',
+      lastName: 'Skywalker',
     }
   }
   shouldComponentUpdate: createShouldUpdate({
     dependencies: ['jedi.id', 'jedi.name', 'jedi.profile.firstName'],
-    stateDependencies: ['selectedJedi.profile.firstName', 'selectedJedi.profile.lastName', 'selectedJedi.profile.id']
+    stateDependencies: ['formState'],
   })
 }
 ```
@@ -56,17 +54,17 @@ or
 import { shouldUpdate } from 'should-update';
 
 class DeathStar extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    selectedJedi: {
-      id: 'some-id',
-      profile: {
-        firstName: 'Anakin',
-        lastName: 'Skywalker',
-      }
+  state = {
+    formState: {
+      firstName: 'Anakin',
+      lastName: 'Skywalker',
     }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
     const dataChanged = shouldUpdate({
       dependencies: ['jedi.id', 'jedi.name', 'jedi.profile.firstName'],
-      stateDependencies: ['selectedJedi.profile.firstName', 'selectedJedi.profile.lastName', 'selectedJedi.profile.id'],
+      stateDependencies: ['formState'],
       state: this.state,
       props: this.props,
       nextProps,
@@ -81,7 +79,7 @@ By default, if the resolved path is a type of object, then the deep comparison h
 To avoid this behavior when you have complex and huge objects you can pass `shallow: true` prop:
 
 ```javascript
-shouldComponentUpdate: createShouldUpdate({ dependencies: ['jedi.profile'], shallow: true, stateDependencies: ['selectedJedi.profile'] })
+shouldComponentUpdate: createShouldUpdate({ dependencies: ['jedi.profile'], shallow: true, stateDependencies: ['formState'] })
 ```
 
 or
@@ -92,7 +90,7 @@ shouldUpdate({
   props: this.props,
   nextProps,
   shallow: true, //defaults to false
-  stateDependencies: ['selectedJedi.profile'],
+  stateDependencies: ['formState'],
   state: this.state,
   nextState,
 });
@@ -104,7 +102,7 @@ shouldUpdate({
 - @param {array} params.dependencies - array of pathes of the properties to depend on
 - @param {object} params.props - component props
 - @param {object} params.nextProps - component changed props. Can be previous or next props
-- @param {boolean} [params.shallow] - if `true` then the function will do shallow comparison.
+- @param {boolean} [params.shallow = false] - if `true` then the function will do shallow comparison.
 - @param {array} params.stateDependencies - array of pathes of the properties to depend on
 - @param {object} params.state - component state
 - @param {object} params.nextState - component changed state. Can be previous or next state

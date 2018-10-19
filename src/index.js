@@ -6,7 +6,7 @@ import isEqual from 'lodash.isequal';
  * @example
  * shouldUpdate({
  *  dependencies: ['user.profile.firstName', 'user.profile.lastName'],
- *  stateDependencies: [jedis],
+ *  stateDependencies: ['formState'],
  *  props: {
  *    user: {
  *      id: 'some-id',
@@ -16,14 +16,11 @@ import isEqual from 'lodash.isequal';
  *      }
  *    }
  *  },
- * state: {
- *  selectedJedi: {
- *    id: 'some-id',
- *      profile: {
- *        firstName: 'Anakin',
- *        lastName: 'Skywalker',
- *     }
- *   }
+ *  state: {
+ *    formState: {
+ *      firstName: 'Anakin',
+ *      lastName: 'Skywalker',
+ *    }
  *  },
  *  nextProps {
  *    user: {
@@ -34,14 +31,11 @@ import isEqual from 'lodash.isequal';
  *      }
  *    }
  *  },
- * nextState {
- *   selectedJedi: {
- *    id: 'some-id',
- *      profile: {
- *        firstName: 'Obi-Wan',
- *        lastName: 'Kenobi',
- *      }
- *   }
+ *  nextState {
+ *    formState: {
+ *      firstName: 'Anakin',
+ *      lastName: 'Skywalker',
+ *    }
  *  },
  * });
  *
@@ -100,7 +94,7 @@ export function shouldUpdate(params) {
  * @example
  * class MyComponent extends Component {
  *   shouldComponentUpdate: createShouldUpdate({
- *     stateDependencies: ['user'],
+ *     stateDependencies: ['formState'],
  *     dependencies: ['user'],
  *     shallow: false,
  *  })
