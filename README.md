@@ -32,7 +32,7 @@ not only the props change, but a state changes.
 **Example usage**:
 
 ```javascript
-import { createShouldUpdate } from 'should-update';
+import { createShouldUpdate } from '@uplab/should-update';
 
 class DeathStar extends Component {
   state = {
@@ -51,7 +51,7 @@ class DeathStar extends Component {
 or
 
 ```javascript
-import { shouldUpdate } from 'should-update';
+import { shouldUpdate } from '@uplab/should-update';
 
 class DeathStar extends Component {
   state = {
